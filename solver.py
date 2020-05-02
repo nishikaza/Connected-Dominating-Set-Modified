@@ -81,7 +81,7 @@ def solve_helper(G):
 def solve(G):
     best_pairwise_distance = 10000000
     best_graph = G
-    for i in range(20):
+    for i in range(1000):
         T = solve_helper(G)
         curr_pairwise_distance = average_pairwise_distance_fast(T)
         if (curr_pairwise_distance < best_pairwise_distance):
