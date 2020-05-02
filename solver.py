@@ -5,14 +5,15 @@ from queue import PriorityQueue
 from random import sample
 import sys
 
+
 def create_initial_tree(G):
     T = nx.Graph()
     heap = PriorityQueue()
     nodetrack = set()
-    
+
     for node in list(G.nodes()):
         nodetrack.add(node)
-        
+
     for (vertex, degree) in G.degree():
         heap.put((-1 * degree, vertex))
 
@@ -33,7 +34,8 @@ def create_initial_tree(G):
                     G.remove_node(neighbor)
                     nodetrack.remove(neighbor)
     return T
-    
+
+
 def solve_helper(G):
     """
     Args:
@@ -48,18 +50,19 @@ def solve_helper(G):
     if G.number_of_nodes == 0:
         return T
     # print("Original number_of_nodes: ", T.number_of_nodes())
-    
+
     p = G.copy()
     vertextrack = set()
     for node in list(T.nodes()):
         vertextrack.add(node)
     while(nx.is_connected(T) == False):
         random_nodes = sample(list(vertextrack), 2)
-        shortest_path = nx.dijkstra_path(p,random_nodes[0],random_nodes[1])
+        shortest_path = nx.dijkstra_path(p, random_nodes[0], random_nodes[1])
         for i in range(len(shortest_path)-1):
-            T.add_edge(shortest_path[i],shortest_path[i+1], weight = G[shortest_path[i]][shortest_path[i+1]]['weight'])
+            T.add_edge(shortest_path[i], shortest_path[i+1],
+                       weight=G[shortest_path[i]][shortest_path[i+1]]['weight'])
     counter = 0
-    while(nx.is_tree(T) == False ):
+    while(nx.is_tree(T) == False):
         counter = counter+1
         try:
             cycle_edges = nx.find_cycle(T)
@@ -76,18 +79,19 @@ def solve_helper(G):
             break
     # print("Number of edges: ", len(T.edges()))
     # print("Number of nodes: ", T.number_of_nodes())
-    return T    
-   
+    return T
+
+
 def solve(G):
     best_pairwise_distance = 10000000
     best_graph = G
-    for i in range(20):
+    for i in range(100):
         T = solve_helper(G)
         curr_pairwise_distance = average_pairwise_distance_fast(T)
         if (curr_pairwise_distance < best_pairwise_distance):
             best_pairwise_distance = curr_pairwise_distance
             best_graph = T
-    return best_graph        
+    return best_graph
 # Pick vertices in descending order of degree until all vertices are either in or adjacent from T
 # Randomly choose pairs of vertices from T and calculate the shortest path between them. Add these edges to T
 # Halt when T is connected, return T
@@ -99,30 +103,29 @@ def solve(G):
 
 if __name__ == '__main__':
     large = "large-"
-    for i in range(1,401):
+    for i in range(1, 401):
         print(i)
-        curLarge = large + str(i) +".in"
+        curLarge = large + str(i) + ".in"
         G = read_input_file("inputs/"+curLarge)
         T = solve(G.copy())
         assert is_valid_network(G, T)
         write_output_file(T, 'outputs/' + curLarge[0:-3] + '.out')
         print("done with large")
     medium = "medium-"
-    for i in range(1,304):
+    for i in range(1, 304):
         print(i)
-        curMedium = medium + str(i) +".in"
+        curMedium = medium + str(i) + ".in"
         G = read_input_file("inputs/"+curMedium)
         T = solve(G.copy())
         assert is_valid_network(G, T)
         write_output_file(T, 'outputs/' + curMedium[0:-3] + '.out')
         print("done with medium")
     small = "small-"
-    for i in range(1,304):
+    for i in range(1, 304):
         print(i)
-        curSmall = small + str(i) +".in"
+        curSmall = small + str(i) + ".in"
         G = read_input_file("inputs/"+curSmall)
         T = solve(G.copy())
         assert is_valid_network(G, T)
         write_output_file(T, 'outputs/' + curSmall[0:-3] + '.out')
         print("done with small")
-    
