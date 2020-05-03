@@ -1,3 +1,7 @@
+# This file was taken from the networkx documentation. We had some trouble importing this package directly, so we instead used the source code.
+# Source: https://networkx.github.io/documentation/networkx-1.10/_modules/networkx/algorithms/approximation/dominating_set.html#min_weighted_dominating_set
+
+
 def min_weighted_dominating_set(G, weight=None):
     r"""Return minimum weight vertex dominating set.
 
