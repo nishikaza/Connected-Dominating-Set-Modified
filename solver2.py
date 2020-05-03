@@ -67,6 +67,8 @@ def solve_helper(G, use_dom):
         vertextrack.add(node)
     while(nx.is_connected(T) == False):
         random_nodes = sample(list(vertextrack), 2)
+        if T.has_edge(random_nodes[0], random_nodes[1]):
+            T[random_nodes[0]][random_nodes[1]]['weight'] = 0
         shortest_path = nx.dijkstra_path(p, random_nodes[0], random_nodes[1])
         for i in range(len(shortest_path)-1):
             T.add_edge(shortest_path[i], shortest_path[i+1],
