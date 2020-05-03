@@ -3,6 +3,7 @@ from parse import read_input_file, write_output_file
 from utils import is_valid_network, average_pairwise_distance, average_pairwise_distance_fast
 from queue import PriorityQueue
 from random import sample
+from min_weight_dom_set import min_weighted_dominating_set
 import sys
 
 
@@ -38,7 +39,7 @@ def create_initial_tree(G):
 
 def create_initial_tree2(G):
     T = nx.Graph()
-    node_set = nx.algorithms.dominating_set(G)
+    node_set = min_weighted_dominating_set(G)
     for i in node_set:
         T.add_node(i)
     return T
