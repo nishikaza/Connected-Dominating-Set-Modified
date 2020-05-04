@@ -49,12 +49,14 @@ def solve_helper(G):
             break
     node_list = list(T.nodes())
     shuffle(node_list)
-    for node in node_list:
-        temp_graph = T.copy()
-        temp_graph.remove_node(node)
-        if is_valid_network(G, temp_graph):
-            T.remove_node(node)
-
+    node_list = list(T.nodes())
+    shuffle(node_list)
+    if len(node_list) != 1:
+        for node in node_list:
+            temp_graph = T.copy()
+            temp_graph.remove_node(node)
+            if is_valid_network(G, temp_graph):
+                T.remove_node(node)
     return T
 
 
