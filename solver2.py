@@ -3,7 +3,6 @@ from parse import read_input_file, write_output_file
 from utils import is_valid_network, average_pairwise_distance, average_pairwise_distance_fast
 from queue import PriorityQueue
 from random import sample, shuffle
-from min_weight_dom_set import min_weighted_dominating_set
 import sys
 
 
@@ -85,9 +84,9 @@ def solve(G):
 
 if __name__ == '__main__':
     large = "large-"
-    for i in range(1, 401):
+    for i in range(1,401):
         print(i)
-        curLarge = large + str(i) + ".in"
+        curLarge = large + str(i) +".in"
         G = read_input_file("inputs/"+curLarge)
         T = solve(G.copy())
         assert is_valid_network(G, T)
@@ -101,6 +100,11 @@ if __name__ == '__main__':
         T = solve(G.copy())
         assert is_valid_network(G, T)
         write_output_file(T, 'outputs/' + curMedium[0:-3] + '.out')
+    print("done with medium")
+    small = "small-"
+    for i in range(1,304):
+        print(i)
+        curSmall = small + str(i) +".in"
     print("done with medium")
     small = "small-"
     for i in range(1, 304):
