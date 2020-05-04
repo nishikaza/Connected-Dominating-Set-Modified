@@ -85,7 +85,7 @@ def solve(G):
 
 if __name__ == '__main__':
     large = "large-"
-    for i in range(76, 401):
+    for i in range(54, 55):
         print(i)
         curLarge = large + str(i) + ".in"
         G = read_input_file("inputs/"+curLarge)
