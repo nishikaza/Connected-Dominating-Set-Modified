@@ -84,34 +84,11 @@ def solve(G):
 
 if __name__ == '__main__':
     large = "large-"
-    for i in range(1,401):
+    for i in range(76, 401):
         print(i)
-        curLarge = large + str(i) +".in"
+        curLarge = large + str(i) + ".in"
         G = read_input_file("inputs/"+curLarge)
         T = solve(G.copy())
         assert is_valid_network(G, T)
         write_output_file(T, 'outputs/' + curLarge[0:-3] + '.out')
     print("done with large")
-    medium = "medium-"
-    for i in range(1, 304):
-        print(i)
-        curMedium = medium + str(i) + ".in"
-        G = read_input_file("inputs/"+curMedium)
-        T = solve(G.copy())
-        assert is_valid_network(G, T)
-        write_output_file(T, 'outputs/' + curMedium[0:-3] + '.out')
-    print("done with medium")
-    small = "small-"
-    for i in range(1,304):
-        print(i)
-        curSmall = small + str(i) +".in"
-    print("done with medium")
-    small = "small-"
-    for i in range(1, 304):
-        print(i)
-        curSmall = small + str(i) + ".in"
-        G = read_input_file("inputs/"+curSmall)
-        T = solve(G.copy())
-        assert is_valid_network(G, T)
-        write_output_file(T, 'outputs/' + curSmall[0:-3] + '.out')
-    print("done with small")
