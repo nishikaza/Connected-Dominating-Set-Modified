@@ -2,55 +2,25 @@ import networkx as nx
 from parse import read_input_file, write_output_file
 from utils import is_valid_network, average_pairwise_distance, average_pairwise_distance_fast
 from queue import PriorityQueue
-from random import sample
+from random import sample, shuffle
+from dominating_set import *
 import sys
 
 
 def create_initial_tree(G):
+    tree_set = dominating_set(G)
     T = nx.Graph()
-    heap = PriorityQueue()
-    nodetrack = set()
-
     for node in list(G.nodes()):
-        nodetrack.add(node)
-
-    for (vertex, degree) in G.degree():
-        heap.put((-1 * degree, vertex))
-
-    while (nx.number_of_nodes(G) != 0 or heap.qsize() != 0):
-        # print("number of nodes: ", nx.number_of_nodes(G))
-        # print("nodetrack:", len(nodetrack))
-        # print("heap size: ", heap.qsize())
-        current_max = heap.get()
-        # print("current max: ", current_max[1])
-
-        if (current_max[1] in nodetrack):
-            neighbors = list(nx.neighbors(G, current_max[1]))
-            T.add_node(current_max[1])
-            G.remove_node(current_max[1])
-            nodetrack.remove(current_max[1])
-            for neighbor in neighbors:
-                if (G.has_node(neighbor)):
-                    G.remove_node(neighbor)
-                    nodetrack.remove(neighbor)
+        if node in tree_set:
+            T.add_node(node)
     return T
 
 
 def solve_helper(G):
-    """
-    Args:
-        G: networkx.Graph
-
-    Returns:
-        T: networkx.Graph
-    """
-
+    if G.number_of_nodes == 0:
+        return G
     q = G.copy()
     T = create_initial_tree(q)
-    if G.number_of_nodes == 0:
-        return T
-    # print("Original number_of_nodes: ", T.number_of_nodes())
-
     p = G.copy()
     vertextrack = set()
     for node in list(T.nodes()):
@@ -63,7 +33,7 @@ def solve_helper(G):
                        weight=G[shortest_path[i]][shortest_path[i+1]]['weight'])
     counter = 0
     while(nx.is_tree(T) == False):
-        counter = counter+1
+        counter = counter + 1
         try:
             cycle_edges = nx.find_cycle(T)
             max = 0
@@ -77,29 +47,31 @@ def solve_helper(G):
             T.remove_edge(maxEdgeFrom, maxEdgeTo)
         except:
             break
-    # print("Number of edges: ", len(T.edges()))
-    # print("Number of nodes: ", T.number_of_nodes())
+    node_list = list(T.nodes())
+    shuffle(node_list)
+    if len(node_list) != 1:
+        for node in node_list:
+            temp_graph = T.copy()
+            temp_graph.remove_node(node)
+            if (temp_graph.number_of_nodes() != 0 and G.number_of_nodes() != 0):
+                if is_valid_network(G, temp_graph):
+                    T.remove_node(node)
     return T
 
 
 def solve(G):
-    best_pairwise_distance = 10000000
+    best_distance = float('inf')
     best_graph = G
-    for i in range(1000):
-        T = solve_helper(G)
-        curr_pairwise_distance = average_pairwise_distance_fast(T)
-        if (curr_pairwise_distance < best_pairwise_distance):
-            best_pairwise_distance = curr_pairwise_distance
-            best_graph = T
+    curr_graph = G
+
+    for i in range(10000):
+        curr_graph = solve_helper(G)
+        curr_distance = average_pairwise_distance_fast(curr_graph)
+        if (curr_distance < best_distance):
+            best_distance = curr_distance
+            best_graph = curr_graph
     return best_graph
-# Pick vertices in descending order of degree until all vertices are either in or adjacent from T
-# Randomly choose pairs of vertices from T and calculate the shortest path between them. Add these edges to T
-# Halt when T is connected, return T
 
-
-# Here's an example of how to run your solver.
-
-# Usage: python3 solver.py test.in
 
 if __name__ == '__main__':
     large = "large-"
@@ -110,7 +82,7 @@ if __name__ == '__main__':
         T = solve(G.copy())
         assert is_valid_network(G, T)
         write_output_file(T, 'outputs/' + curLarge[0:-3] + '.out')
-        print("done with large")
+    print("done with large")
     medium = "medium-"
     for i in range(1, 304):
         print(i)
@@ -119,7 +91,7 @@ if __name__ == '__main__':
         T = solve(G.copy())
         assert is_valid_network(G, T)
         write_output_file(T, 'outputs/' + curMedium[0:-3] + '.out')
-        print("done with medium")
+    print("done with medium")
     small = "small-"
     for i in range(1, 304):
         print(i)
@@ -128,4 +100,4 @@ if __name__ == '__main__':
         T = solve(G.copy())
         assert is_valid_network(G, T)
         write_output_file(T, 'outputs/' + curSmall[0:-3] + '.out')
-        print("done with small")
+    print("done with small")

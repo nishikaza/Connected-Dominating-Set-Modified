@@ -1,17 +1,8 @@
-# CS 170 Project Spring 2020
+How to run the code:
 
-Take a look at the project spec before you get started!
+1. Navigate to the main project file, cs170project
+2. In the terminal, run python3 solver.py to run on all inputs.
+   1. To specify a certain input, you can modify the for loop constraints that are specified for small, medium, and large to select a single input file.
+3. All output files will be contained in cs170project/outputs
 
-Requirements:
-
-You'll only need to install networkx to work with the starter code. For installation instructions, follow: https://networkx.github.io/documentation/stable/install.html
-
-Files:
-- `parse.py`: functions to read/write inputs and outputs
-- `solver.py`: where you should be writing your code to solve inputs
-- `utils.py`: contains functions to compute cost and validate NetworkX graphs
-
-When writing inputs/outputs:
-- Make sure you use the functions `write_input_file` and `write_output_file` provided
-- Run the functions `read_input_file` and `read_output_file` to validate your files before submitting!
-  - These are the functions run by the autograder to validate submissions
+Happy coding!
