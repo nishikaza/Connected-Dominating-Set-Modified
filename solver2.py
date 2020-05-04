@@ -54,8 +54,9 @@ def solve_helper(G):
         for node in node_list:
             temp_graph = T.copy()
             temp_graph.remove_node(node)
-            if is_valid_network(G, temp_graph):
-                T.remove_node(node)
+            if (temp_graph.number_of_nodes() != 0 and G.number_of_nodes() != 0):
+                if is_valid_network(G, temp_graph):
+                    T.remove_node(node)
     return T
 
 
