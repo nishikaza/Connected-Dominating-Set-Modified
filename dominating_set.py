@@ -1,6 +1,8 @@
 # This file was sourced then modified for our purposes from the Networkx documentation. Specifically, the randomization processes were overhauled.
 # Source: https://networkx.github.io/documentation/stable/_modules/networkx/algorithms/dominating.html#dominating_set
 from random import sample, choice, shuffle
+from itertools import chain
+import networkx as nx
 
 
 def dominating_set(G, start_with=None):
