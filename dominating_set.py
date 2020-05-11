@@ -1,4 +1,4 @@
-# This file was taken and then modified for our purposes from the networkx documentation.
+# This file was sourced then modified for our purposes from the Networkx documentation. Specifically, the randomization processes were overhauled.
 # Source: https://networkx.github.io/documentation/stable/_modules/networkx/algorithms/dominating.html#dominating_set
 from random import sample, choice, shuffle
 
