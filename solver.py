@@ -7,27 +7,79 @@ from dominating_set import *
 import sys
 
 
+def solve(G):
+    """Approximates a connected dominating set across a graph input.
+
+    Parameters
+    ----------
+    G: NetworkX graph
+
+    Returns
+    -------
+    T: A connected dominating set across G
+
+    Notes
+    -----
+    This function was designed to be a randomized approximation algorithm. 
+    This is an NP-hard problem which makes finding a correct solution computationally difficult.
+    However, by employing probabilistic measures, this algorithm can ensure a solution T that approximates the optimal solution T'.
+
+    """
+
+    # initialize variables to track, and eventually return, best tree
+    best_distance = float('inf')
+    best_tree = G
+    curr_tree = G
+
+    # run loop 1000 times for each graph input to continually improve solution over time
+    for i in range(1000):
+        curr_graph = solve_computation(G)
+        curr_distance = average_pairwise_distance_fast(curr_tree)
+        if (curr_distance < best_distance):
+            best_distance = curr_distance
+            best_tree = curr_tree
+    return best_tree
+
+
 def create_initial_tree(G):
+    """Approximates a connected dominating set across a graph input.
+
+    Parameters
+    ----------
+    G: NetworkX graph
+
+    Returns
+    -------
+    disconnected_dominating_graph: A disconnected NetworkX graph that represents one possible dominating set of G
+
+    Notes
+    -----
+    This function uses dominating_set from the local file NOT nx.dominating_set. After repeated trials, it was found that
+    the randomization processes used by the nx.dominating_set import yielded undesirable results and thus had to be
+    modified for this use case.
+
+    """
+
     tree_set = dominating_set(G)
-    T = nx.Graph()
+    disconnected_dominating_graph = nx.Graph()
     for node in list(G.nodes()):
         if node in tree_set:
-            T.add_node(node)
-    return T
+            disconnected_dominating_graph.add_node(node)
+    return disconnected_dominating_graph
 
 
-def solve_helper(G):
+def solve_computation(G):
     if G.number_of_nodes == 0:
         return G
-    q = G.copy()
-    T = create_initial_tree(q)
-    p = G.copy()
+    input_graph_copy = G.copy()
+    T = create_initial_tree(input_graph_copy)
     vertextrack = set()
     for node in list(T.nodes()):
         vertextrack.add(node)
     while(nx.is_connected(T) == False):
         random_nodes = sample(list(vertextrack), 2)
-        shortest_path = nx.dijkstra_path(p, random_nodes[0], random_nodes[1])
+        shortest_path = nx.dijkstra_path(
+            input_graph_copy, random_nodes[0], random_nodes[1])
         for i in range(len(shortest_path)-1):
             T.add_edge(shortest_path[i], shortest_path[i+1],
                        weight=G[shortest_path[i]][shortest_path[i+1]]['weight'])
@@ -57,47 +109,3 @@ def solve_helper(G):
                 if is_valid_network(G, temp_graph):
                     T.remove_node(node)
     return T
-
-
-def solve(G):
-    best_distance = float('inf')
-    best_graph = G
-    curr_graph = G
-
-    for i in range(10000):
-        curr_graph = solve_helper(G)
-        curr_distance = average_pairwise_distance_fast(curr_graph)
-        if (curr_distance < best_distance):
-            best_distance = curr_distance
-            best_graph = curr_graph
-    return best_graph
-
-
-if __name__ == '__main__':
-    large = "large-"
-    for i in range(1, 401):
-        print(i)
-        curLarge = large + str(i) + ".in"
-        G = read_input_file("inputs/"+curLarge)
-        T = solve(G.copy())
-        assert is_valid_network(G, T)
-        write_output_file(T, 'outputs/' + curLarge[0:-3] + '.out')
-    print("done with large")
-    medium = "medium-"
-    for i in range(1, 304):
-        print(i)
-        curMedium = medium + str(i) + ".in"
-        G = read_input_file("inputs/"+curMedium)
-        T = solve(G.copy())
-        assert is_valid_network(G, T)
-        write_output_file(T, 'outputs/' + curMedium[0:-3] + '.out')
-    print("done with medium")
-    small = "small-"
-    for i in range(1, 304):
-        print(i)
-        curSmall = small + str(i) + ".in"
-        G = read_input_file("inputs/"+curSmall)
-        T = solve(G.copy())
-        assert is_valid_network(G, T)
-        write_output_file(T, 'outputs/' + curSmall[0:-3] + '.out')
-    print("done with small")
